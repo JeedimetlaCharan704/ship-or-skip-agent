@@ -64,8 +64,8 @@ In every case, the persona stayed authentic, the recommendations were immediatel
 
 ## Proof It Works
 
-* **GitHub Repository:** [https://github.com/charan-builder/ship-or-skip-agent](https://github.com/charan-builder/ship-or-skip-agent) *(replace with your repo URL)*
-* **Live Demo / Endpoint:** `http://localhost:5000` *(or your AWS Lambda Function URL / Amplify URL)*
+* **Live Application:** [https://ship-or-skip-agent.vercel.app](https://ship-or-skip-agent.vercel.app)
+* **GitHub Repository:** [https://github.com/JeedimetlaCharan704/ship-or-skip-agent](https://github.com/JeedimetlaCharan704/ship-or-skip-agent)
 * **Demonstration Walkthrough:**
   1. Open the application dashboard and review the preloaded presets ("🔥 4 Hours Left: 3 AM Panic", "🤖 Over-Engineered Multi-Agent", "✨ Clean 1-Feature Flow").
   2. Adjust the countdown slider to your remaining hackathon hours and select your preferred Coach Persona.

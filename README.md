@@ -61,6 +61,9 @@ flowchart TD
 2. **The "Never Leave You Stuck" Principle**: If model quotas or credentials fail, the agent seamlessly switches to a deterministic heuristic engine without throwing stack traces or blank screens.
 3. **One-Click Team Export**: A single button copies a formatted, markdown-ready action plan directly into your team's Slack or Discord channel.
 
+* **Live Application:** [https://ship-or-skip-agent.vercel.app](https://ship-or-skip-agent.vercel.app)
+* **GitHub Repository:** [https://github.com/JeedimetlaCharan704/ship-or-skip-agent](https://github.com/JeedimetlaCharan704/ship-or-skip-agent)
+
 ---
 
 ## 🚀 Quickstart (Run Locally in 1 Minute)
