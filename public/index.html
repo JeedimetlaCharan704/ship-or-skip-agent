@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShipOrSkip AI — Hackathon Sanity & Scope Coach</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-white font-black text-xl">
+          🚀
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
+            ShipOrSkip <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">Bedrock Agent</span>
+          </h1>
+          <p class="text-xs text-slate-400">The Hackathon Sanity & MVP Scope Coach</p>
+        </div>
+      </div>
+      
+      <!-- Status Badge -->
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Amazon Bedrock Ready
+        </span>
+        <a href="https://github.com" target="_blank" class="text-slate-400 hover:text-white transition text-sm">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-5xl mx-auto px-4 py-8 w-full">
+    
+    <!-- Hero / Intro -->
+    <div class="mb-8 text-center sm:text-left">
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 via-amber-200 to-orange-400 bg-clip-text text-transparent">
+        Don't let 3 AM scope creep kill your hackathon demo.
+      </h2>
+      <p class="text-slate-400 text-sm mt-1">
+        Paste your idea and countdown. ShipOrSkip trims the feature bloat, flags your fatal rabbit hole, and gives you a 1-feature MVP that wins judges over.
+      </p>
+
+      <!-- Quick Preset Buttons -->
+      <div class="mt-4 flex flex-wrap gap-2 items-center">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Try quick presets:</span>
+        <button onclick="loadPreset('panic')" class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition">
+          🔥 4 Hours Left: 3 AM Panic
+        </button>
+        <button onclick="loadPreset('overkill')" class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 border border-slate-700 transition">
+          🤖 Over-Engineered Multi-Agent
+        </button>
+        <button onclick="loadPreset('clean')" class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 transition">
+          ✨ Clean 1-Feature Flow
+        </button>
+      </div>
+    </div>
+
+    <!-- 2 Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- Left Column: Input Form -->
+      <div class="lg:col-span-6 space-y-5">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+          <form id="agentForm" onsubmit="handleAnalyze(event)" class="space-y-4">
+            
+            <!-- Project Name -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Project Name</label>
+              <input type="text" id="ideaName" required placeholder="e.g. CodePulse or QuickDoc AI"
+                     class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition text-slate-100" />
+            </div>
+
+            <!-- Hours Left Slider -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-semibold text-slate-300">Countdown Remaining</label>
+                <span id="hoursDisplay" class="text-xs font-bold font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">8 Hours</span>
+              </div>
+              <input type="range" id="hoursLeft" min="1" max="48" value="8" oninput="updateHoursDisplay(this.value)"
+                     class="w-full h-2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-amber-500" />
+              <div class="flex justify-between text-[10px] text-slate-500 mt-0.5 font-mono">
+                <span>1h (Demo panic)</span>
+                <span>12h</span>
+                <span>24h</span>
+                <span>48h (Opening bell)</span>
+              </div>
+            </div>
+
+            <!-- Coach Persona Selector -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Coach Persona Tone</label>
+              <div class="grid grid-cols-3 gap-2">
+                <label class="cursor-pointer">
+                  <input type="radio" name="persona" value="mentor" class="peer sr-only" />
+                  <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 text-center transition">
+                    <div class="text-sm">🌱</div>
+                    <div class="text-xs font-semibold mt-1">Senior Mentor</div>
+                    <div class="text-[10px] text-slate-400">Gentle & encouraging</div>
+                  </div>
+                </label>
+
+                <label class="cursor-pointer">
+                  <input type="radio" name="persona" value="architect" checked class="peer sr-only" />
+                  <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 peer-checked:border-sky-500 peer-checked:bg-sky-500/10 text-center transition">
+                    <div class="text-sm">📐</div>
+                    <div class="text-xs font-semibold mt-1">Tech Lead</div>
+                    <div class="text-[10px] text-slate-400">Pragmatic & crisp</div>
+                  </div>
+                </label>
+
+                <label class="cursor-pointer">
+                  <input type="radio" name="persona" value="brutal" class="peer sr-only" />
+                  <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 peer-checked:border-rose-500 peer-checked:bg-rose-500/10 text-center transition">
+                    <div class="text-sm">🔥</div>
+                    <div class="text-xs font-semibold mt-1">3 AM Judge</div>
+                    <div class="text-[10px] text-slate-400">Zero fluff, tough love</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Tech Stack Planned</label>
+              <input type="text" id="techStack" placeholder="e.g. React, Python Lambda, Bedrock Nova Micro, DynamoDB"
+                     class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition text-slate-100" />
+            </div>
+
+            <!-- Idea Description -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Idea & Feature Wish-list</label>
+              <textarea id="description" rows="4" required placeholder="Describe what you plan to build, all features planned, and user flows..."
+                        class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition text-slate-100 resize-none"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn"
+                    class="w-full py-3 px-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-2">
+              <span id="btnIcon">⚡</span>
+              <span id="btnText">Analyze Scope & Sanity Check</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Agent Assessment Output -->
+      <div class="lg:col-span-6">
+        
+        <!-- Empty State -->
+        <div id="emptyState" class="bg-slate-900/50 border border-dashed border-slate-800 rounded-2xl p-8 text-center h-full flex flex-col items-center justify-center">
+          <div class="w-16 h-16 rounded-2xl bg-slate-800/60 flex items-center justify-center text-3xl mb-3 text-slate-500">
+            ⚖️
+          </div>
+          <h3 class="font-bold text-slate-300 mb-1">No Assessment Yet</h3>
+          <p class="text-xs text-slate-500 max-w-sm">
+            Enter your hackathon idea on the left or click a preset to have ShipOrSkip calculate your feasibility score and trim your feature bloat.
+          </p>
+        </div>
+
+        <!-- Result Card (Hidden until submitted) -->
+        <div id="resultCard" class="hidden space-y-4">
+          
+          <!-- Top Verdict Banner -->
+          <div id="verdictBanner" class="p-5 rounded-2xl border shadow-xl transition">
+            <div class="flex items-center justify-between mb-2">
+              <span id="verdictBadge" class="px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase">
+                VERDICT
+              </span>
+              <span id="scoreBadge" class="font-mono text-sm font-bold">
+                Score: 0/100
+              </span>
+            </div>
+            <h3 id="verdictHeadline" class="text-base sm:text-lg font-extrabold text-white leading-tight"></h3>
+            <p id="coachQuote" class="text-xs mt-2 italic text-slate-300 bg-black/30 p-2.5 rounded-lg border border-white/5"></p>
+          </div>
+
+          <!-- Fatal Rabbit Hole Alert -->
+          <div class="p-4 rounded-xl bg-rose-950/30 border border-rose-500/30 flex gap-3 items-start">
+            <div class="text-xl text-rose-400 mt-0.5">⚠️</div>
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-rose-300">The Fatal Rabbit Hole</h4>
+              <p id="fatalRabbitHole" class="text-xs text-rose-100/90 mt-0.5"></p>
+            </div>
+          </div>
+
+          <!-- The One-Feature MVP -->
+          <div class="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30">
+            <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
+              <span>🎯</span> The "Golden Path" One-Feature MVP
+            </div>
+            <p id="oneFeatureMvp" class="text-xs text-slate-200 leading-relaxed"></p>
+          </div>
+
+          <!-- Sprint Roadmap -->
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <h4 class="text-xs font-bold text-slate-300 mb-2 flex items-center justify-between">
+              <span>⏱️ Countdown Sprint Plan</span>
+              <span class="text-[10px] text-slate-500">Demo > Perfection</span>
+            </h4>
+            <div id="sprintPlanList" class="space-y-2 text-xs"></div>
+          </div>
+
+          <!-- Cut List -->
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+            <h4 class="text-xs font-bold text-slate-300 mb-1.5 flex items-center gap-1.5">
+              <span>✂️</span> Cut These Features Immediately (Mock or Drop)
+            </h4>
+            <ul id="featuresToDropList" class="space-y-1 text-xs text-slate-400 list-disc list-inside"></ul>
+          </div>
+
+          <!-- Footer Actions & Source -->
+          <div class="flex items-center justify-between pt-2">
+            <span id="resultSource" class="text-[11px] text-slate-500 font-mono"></span>
+            <button onclick="copySummary()" class="px-3 py-1.5 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+              <i class="far fa-copy"></i>
+              <span id="copyBtnText">Copy for Team Chat</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 bg-slate-900/40 text-slate-500 text-xs py-4 text-center">
+    <p>ShipOrSkip AI — Built for the AWS Builder Center Weekend Agent Challenge (#agents)</p>
+  </footer>
+
+  <script>
+    function updateHoursDisplay(val) {
+      document.getElementById('hoursDisplay').innerText = val + ' Hours';
+    }
+
+    const presets = {
+      panic: {
+        name: "QuickDoc AI (Medical Summary)",
+        hours: 4,
+        persona: "brutal",
+        tech: "Next.js, FastAPI, Pinecone vector DB, OAuth, Stripe integration",
+        desc: "We want to build a platform where doctors can upload 100-page patient histories, query them with multi-agent RAG, pay for credits via Stripe, and download signed PDF reports with custom auth."
+      },
+      overkill: {
+        name: "Multi-Agent Crypto Trader",
+        hours: 12,
+        persona: "architect",
+        tech: "Docker, Kubernetes, WebSocket live feeds, Smart Contracts, 5 LangChain agents",
+        desc: "An autonomous swarm of 5 micro-agents that scrape Twitter sentiment, calculate Bollinger bands, execute swaps on Ethereum testnet, and stream real-time price updates through WebSocket."
+      },
+      clean: {
+        name: "ReceiptSnip",
+        hours: 8,
+        persona: "mentor",
+        tech: "Python Flask, Amazon Bedrock Nova Micro, Tailwind CSS",
+        desc: "A small app where you snap a photo of a restaurant receipt, it extracts total items and split owed per friend, and gives you one copyable WhatsApp summary text."
+      }
+    };
+
+    function loadPreset(key) {
+      const p = presets[key];
+      document.getElementById('ideaName').value = p.name;
+      document.getElementById('hoursLeft').value = p.hours;
+      updateHoursDisplay(p.hours);
+      document.getElementById('techStack').value = p.tech;
+      document.getElementById('description').value = p.desc;
+      
+      const radio = document.querySelector(`input[name="persona"][value="${p.persona}"]`);
+      if (radio) radio.checked = true;
+
+      // Trigger automatic assessment for instant delight
+      handleAnalyze(new Event('submit'));
+    }
+
+    let lastResult = null;
+
+    async function handleAnalyze(e) {
+      if (e) e.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnIcon = document.getElementById('btnIcon');
+      
+      btn.disabled = true;
+      btnText.innerText = "Evaluating scope on Bedrock...";
+      btnIcon.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+
+      const payload = {
+        idea_name: document.getElementById('ideaName').value,
+        hours_left: document.getElementById('hoursLeft').value,
+        tech_stack: document.getElementById('techStack').value,
+        description: document.getElementById('description').value,
+        persona: document.querySelector('input[name="persona"]:checked')?.value || "architect"
+      };
+
+      try {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        lastResult = data;
+        renderResult(data);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        alert("Error analyzing idea: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btnText.innerText = "Analyze Scope & Sanity Check";
+        btnIcon.innerHTML = `⚡`;
+      }
+    }
+
+    function renderResult(data) {
+      document.getElementById('emptyState').classList.add('hidden');
+      const resultCard = document.getElementById('resultCard');
+      resultCard.classList.remove('hidden');
+
+      // Verdict Banner Styling
+      const banner = document.getElementById('verdictBanner');
+      const badge = document.getElementById('verdictBadge');
+      const score = document.getElementById('scoreBadge');
+      
+      banner.className = "p-5 rounded-2xl border shadow-xl transition ";
+      badge.innerText = data.verdict;
+      score.innerText = `Feasibility: ${data.feasibility_score}/100`;
+
+      if (data.verdict === "SHIP") {
+        banner.className += "bg-emerald-950/40 border-emerald-500/40";
+        badge.className = "px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-emerald-500 text-slate-950";
+        score.className = "font-mono text-sm font-bold text-emerald-400";
+      } else if (data.verdict === "TRIM") {
+        banner.className += "bg-amber-950/40 border-amber-500/40";
+        badge.className = "px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-amber-500 text-slate-950";
+        score.className = "font-mono text-sm font-bold text-amber-400";
+      } else {
+        banner.className += "bg-rose-950/40 border-rose-500/40";
+        badge.className = "px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-rose-500 text-white";
+        score.className = "font-mono text-sm font-bold text-rose-400";
+      }
+
+      document.getElementById('verdictHeadline').innerText = data.verdict_headline;
+      document.getElementById('coachQuote').innerText = `"${data.coach_quote}"`;
+      document.getElementById('fatalRabbitHole').innerText = data.fatal_rabbit_hole;
+      document.getElementById('oneFeatureMvp').innerText = data.one_feature_mvp;
+
+      // Sprint Plan
+      const sprintContainer = document.getElementById('sprintPlanList');
+      sprintContainer.innerHTML = '';
+      data.sprint_plan.forEach((s, idx) => {
+        const item = document.createElement('div');
+        item.className = "p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-start gap-2.5";
+        item.innerHTML = `
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-[10px] font-bold flex items-center justify-center shrink-0 text-amber-400 font-mono">${idx+1}</span>
+          <div>
+            <div class="font-semibold text-slate-200">${s.phase}</div>
+            <div class="text-slate-400 mt-0.5">${s.goal}</div>
+          </div>
+        `;
+        sprintContainer.appendChild(item);
+      });
+
+      // Features to drop
+      const dropContainer = document.getElementById('featuresToDropList');
+      dropContainer.innerHTML = '';
+      data.features_to_drop.forEach(f => {
+        const li = document.createElement('li');
+        li.innerText = f;
+        dropContainer.appendChild(li);
+      });
+
+      // Source
+      document.getElementById('resultSource').innerText = "Engine: " + data.source;
+
+      // Smooth scroll to results on mobile
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function copySummary() {
+      if (!lastResult) return;
+      const text = `🚀 ShipOrSkip AI Assessment for "${document.getElementById('ideaName').value}":
+Verdict: ${lastResult.verdict} (${lastResult.feasibility_score}/100)
+Headline: ${lastResult.verdict_headline}
+⚠️ Fatal Rabbit Hole: ${lastResult.fatal_rabbit_hole}
+🎯 Recommended MVP: ${lastResult.one_feature_mvp}
+Advice: "${lastResult.coach_quote}"`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtnText');
+        btn.innerText = "Copied to clipboard!";
+        setTimeout(() => btn.innerText = "Copy for Team Chat", 2500);
+      });
+    }
+  </script>
+</body>
+</html>
